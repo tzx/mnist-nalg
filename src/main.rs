@@ -1,8 +1,8 @@
-use mnist_nalg::{DataSet, build_dataset};
+use mnist_nalg::{build_dataset, init_params, DataSet, NUM_DATAPOINTS};
 use nalgebra::DMatrix;
 use std::error;
+use std::fs::File;
 use std::str::FromStr;
-use std::{fs::File, u8};
 
 // format is [label, pix-11, pix-12, pix-13, ...]
 const TRAIN_CSV: &str = "data/mnist_train.csv";
@@ -11,7 +11,7 @@ const TEST_CSV: &str = "data/mnist_test.csv";
 /// parses a csv for image data into a matrix
 /// each row represents a single image where the first column is the label and the rest are the
 /// pixel data. The number of columns should be 785 as the images are 28x28
-fn parse_csv(file_path: &str) -> Result<DMatrix<u8>, Box<dyn error::Error>> {
+fn parse_csv(file_path: &str) -> Result<DMatrix<f64>, Box<dyn error::Error>> {
     let file = File::open(file_path)?;
     let rdr = csv::Reader::from_reader(file);
 
@@ -20,8 +20,10 @@ fn parse_csv(file_path: &str) -> Result<DMatrix<u8>, Box<dyn error::Error>> {
     for result in rdr.into_records() {
         rows += 1;
         let record = result?;
-        let record_iter: Result<Vec<_>, _> =
-            record.into_iter().map(|x| u8::from_str(x.trim())).collect();
+        let record_iter: Result<Vec<_>, _> = record
+            .into_iter()
+            .map(|x| f64::from_str(x.trim()))
+            .collect();
         let mut record_iter = record_iter?;
         data.append(&mut record_iter);
     }
@@ -38,8 +40,13 @@ fn main() {
     // We probably want to tranpose for the matrix operations
     let train_matrix = parse_csv(TRAIN_CSV).expect("failed to parse training csv");
     let test_matrix = parse_csv(TEST_CSV).expect("failed to parse testing csv");
-    assert!(train_matrix.ncols() == 785);
-    assert!(test_matrix.ncols() == 785);
+    assert!(train_matrix.ncols() == NUM_DATAPOINTS + 1);
+    assert!(test_matrix.ncols() == NUM_DATAPOINTS + 1);
 
     let train_dataset = build_dataset(&train_matrix);
+
+    // I'm kinda a dumbass and used const generics for the 784 datapoints, but now how could I can
+    // expand lol
+    let initial_params = init_params::<NUM_DATAPOINTS>();
+    println!("{:?}", initial_params);
 }
