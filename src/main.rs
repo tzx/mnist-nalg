@@ -1,3 +1,4 @@
+use mnist_nalg::{DataSet, build_dataset};
 use nalgebra::DMatrix;
 use std::error;
 use std::str::FromStr;
@@ -37,7 +38,8 @@ fn main() {
     // We probably want to tranpose for the matrix operations
     let train_matrix = parse_csv(TRAIN_CSV).expect("failed to parse training csv");
     let test_matrix = parse_csv(TEST_CSV).expect("failed to parse testing csv");
-
     assert!(train_matrix.ncols() == 785);
     assert!(test_matrix.ncols() == 785);
+
+    let train_dataset = build_dataset(&train_matrix);
 }
