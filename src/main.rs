@@ -1,4 +1,4 @@
-use mnist_nalg::{build_dataset, init_params, DataSet, NUM_DATAPOINTS};
+use mnist_nalg::{build_dataset, Params, NUM_DATAPOINTS};
 use nalgebra::DMatrix;
 use std::error;
 use std::fs::File;
@@ -47,6 +47,7 @@ fn main() {
 
     // I'm kinda a dumbass and used const generics for the 784 datapoints, but now how could I can
     // expand lol
-    let initial_params = init_params::<NUM_DATAPOINTS>();
+    let initial_params = Params::<NUM_DATAPOINTS>::init_params();
+    // let initial_params = mnist_nalginit_params::<NUM_DATAPOINTS>();
     println!("{:?}", initial_params);
 }

@@ -59,14 +59,21 @@ impl<const N: usize> std::fmt::Debug for Params<N> {
     }
 }
 
-pub fn init_params<const N: usize>() -> Params<N> {
-    let mut rng = rand::thread_rng();
-    let dist = rand::distributions::Uniform::<f64>::new(0.0, 1.0);
+impl<const N: usize> Params<N> {
+    pub fn init_params() -> Self {
+        let mut rng = rand::thread_rng();
+        let dist = rand::distributions::Uniform::<f64>::new(0.0, 1.0);
 
-    let w1 = SMatrix::<f64, N, NUMBERS>::from_distribution(&dist, &mut rng);
-    let b1 = SVector::<f64, NUMBERS>::from_distribution(&dist, &mut rng);
-    let w2 = SMatrix::<f64, NUMBERS, NUMBERS>::from_distribution(&dist, &mut rng);
-    let b2 = SVector::<f64, NUMBERS>::from_distribution(&dist, &mut rng);
+        let w1 = SMatrix::<f64, N, NUMBERS>::from_distribution(&dist, &mut rng);
+        let b1 = SVector::<f64, NUMBERS>::from_distribution(&dist, &mut rng);
+        let w2 = SMatrix::<f64, NUMBERS, NUMBERS>::from_distribution(&dist, &mut rng);
+        let b2 = SVector::<f64, NUMBERS>::from_distribution(&dist, &mut rng);
 
-    return Params { w1, b1, w2, b2 };
+        return Params { w1, b1, w2, b2 };
+    }
+
+    pub fn relu(input: mut ) {
+
+    }
 }
+
